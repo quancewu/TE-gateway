@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+<html>
+<head>
+    <title>Embed Control</title>
+    <link type="text/css" href="style.css" rel="stylesheet"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <script async src="control.js"></script>
+    <script async src="routing.js"></script>
+</head>
+
+<body>
+    <div id="app-wrap">
+        <header>
+            <h1>Control Engineering mode</h1>
+        </header>
+        <p>
+            This is being hosted from local web.
+        </p>
+        <!-- <p>
+            The below bar should change an LED brightness connected to the microcontroller.
+            Try it when more than one device is connected!
+        </p> -->
+        <table id="client-id-table" class="col2-right">
+            <col width=50% />
+            <col width=50% />
+            <thead>
+              <tr>
+                  <th colspan="2" style="text-align: center;font-size: x-large;">Details</th>
+              </tr>
+          </thead>
+            <tr>
+                <td>TE-GW ID</td>
+                <td>NONE</td>
+            </tr>
+            <tr>
+                <td>Hostname</td>
+                <td>NONE</td>
+            </tr>
+            <tr>
+              <td>MQTT URI</td>
+              <td>---</td>
+            </tr>
+            <tr>
+              <td>MQTT PSK</td>
+              <td>---</td>
+            </tr>
+            <tr>
+              <td>MQTT PSK Hint</td>
+              <td>---</td>
+            </tr>
+            <tr>
+              <td>MQTT PUB</td>
+              <td>---</td>
+            </tr>
+            <tr>
+              <td>MQTT SUB</td>
+              <td>---</td>
+            </tr>
+            <tr>
+              <td>Update Time</td>
+              <td>---</td>
+            </tr>
+        </table>
+        <!-- <div class="slidecontainer">
+        <input type="range" min="0" max="100" value="0" class="slider" id="myRange">
+        </div> -->
+        <hr>
+        <table id="update-time-table" class="col2-right">
+            <col width=50% />
+            <col width=50% />
+            <thead>
+              <tr>
+                  <th colspan="2" style="text-align: center;font-size: x-large;">Timer</th>
+              </tr>
+          </thead>
+          <tr>
+            <td>ISO8601</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Local time</td>
+            <td></td>
+          </tr>
+        </table>
+            Send pwd  : <br>
+               <input type="password" id="ftext1" name="ftext1" style="width: 140px; margin: 10px;">
+        <button type="button" id ="btn01" class="btn" onclick="sendText(document.getElementsByName('ftext1')[0].value);">Send</button>
+        <form id="frm2" action="#">
+            Send info : 
+            <input type="radio" id="gw_id" name="sendid" value="gw">
+            <label for="su"> GW</label>
+            <input type="radio" id="lr_id" name="sendid" value="lr">
+            <label for="su"> LR</label>
+            <input type="radio" id="su_id" name="sendid" value="su">
+            <label for="su"> SU</label> |
+            <label for="quantity">ID:</label>
+            <input type="number" id="quantity" name="quantity" min="0" max="500" style="width: 40px;">
+            <br>
+                <input type="text" name="ftext2" style="width: 140px; margin: 10px;">
+        <button type="button" onclick="sendTextEng(document.getElementsByName('ftext2')[0].value);">Send</button>
+        </form>
+        <form id="frm3" action="#">
+          Send info : 
+          <input type="radio" id="mqtt" name="sendmqtt" value="authuri">
+          <label for="su"> MQTT</label>
+          <input type="radio" id="pub_uri" name="sendmqtt" value="puburi">
+          <label for="su"> PUB</label>
+          <input type="radio" id="sub_uri" name="sendmqtt" value="suburi">
+          <label for="su"> SUB</label>
+          <input type="radio" id="psk" name="sendmqtt" value="psk">
+          <label for="su"> PSK</label>
+          <input type="radio" id="psk_hint" name="sendmqtt" value="pskhint">
+          <label for="su"> PSK_HINT</label>
+          <input type="radio" id="hostname" name="sendmqtt" value="hostname">
+          <label for="su"> device_hostname</label>
+          <input type="radio" id="certpem" name="sendmqtt" value="certpem">
+          <label for="su"> cert.pem</label>
+          <br>
+              <input type="text" name="ftext3" style="width: 140px; margin: 10px;">
+      <button type="button" onclick="sendMqttInfo(document.getElementsByName('ftext3')[0].value);">Send</button>
+      </form>
+        <p id="test"></p>
+        <div>
+            <input type="color" id="colorset" name="color"
+                   value="#FF0000">
+            <label for="colorset">Head</label>
+        </div>
+        <!-- <div>
+            <input type="datetime-local" id="datePicker"
+            name="datePicker">
+            <button type="button" onclick="sendText(document.getElementsByName('datePicker')[0].value);">Send</button>
+        </div> -->
+        <p>
+        The below counter is being sent from the TornadoEdge Gateway:
+        </p>
+        <p id="output"></p>
+        <table id="client-msu-table">
+            <col width=20% />
+            <col width=40% />
+            <col width=40% />
+            <tr>
+              <th>index No.</th>
+              <th>SU ID</th>
+              <th>DP ID</th>
+            </tr>
+            <tr>
+              <td>No.1</td>
+              <td>------</td>
+              <td>------</td>
+            </tr>
+            <tr>
+              <td>No.2</td>
+              <td>------</td>
+              <td>------</td>
+            </tr>
+            <tr>
+              <td>No.3</td>
+              <td>------</td>
+              <td>------</td>
+            </tr>
+            <tr>
+              <td>No.4</td>
+              <td>------</td>
+              <td>------</td>
+            </tr>
+            <tr>
+              <td>No.5</td>
+              <td>------</td>
+              <td>------</td>
+            </tr>
+            <tr>
+              <td>No.6</td>
+              <td>------</td>
+              <td>------</td>
+            </tr>
+        </table>
+        <p></p>
+    </div>
+    <div class="navbar">
+        <section class="routing-sec"></section>
+    </div> 
+    
+</body>
+</html>
+<style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    th, td {
+      text-align: left;
+      padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #D6EEEE;
+    }
+
+</style>

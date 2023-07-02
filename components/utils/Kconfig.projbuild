@@ -1,0 +1,113 @@
+menu "STORAGE Configuration"
+    menu "Utils"
+        choice MEM_ALLOCATION_LOCATION
+            prompt "The memory location allocated by MALLOC CALLOC and REALLOC"
+            help 
+                choice where to allocate memory, can be SPIRAM or default
+
+            config MEM_ALLOCATION_DEFAULT
+                bool "default allocation strategy"
+            config MEM_ALLOCATION_SPIRAM
+                depends on ESP32S2_SPIRAM_SUPPORT || ESP32_SPIRAM_SUPPORT
+                bool "allocate memory in SPIRAM"
+        endchoice
+            
+        config MEM_DEBUG
+            bool "Memory debug"
+            default y
+            help
+                Memory debug.
+
+        config MEM_DBG_INFO_MAX
+            int "Memory debug record max."
+            default 128
+            help
+                Config Memory debug record max.
+
+        config NVS_NAMESPACE
+            string "Namespace where data is stored in NVS"
+            default "qcloud_app"
+            help
+                Namespace where data is stored in NVS.
+
+        config REBOOT_UNBROKEN_INTERVAL_TIMEOUT
+            int "Continuous reboot interval(ms)"
+            default 5000
+            help
+            Continuous reboot interval.
+
+        config REBOOT_UNBROKEN_FALLBACK_COUNT
+            int "Continuous restart triggers version rollback"
+            default 30
+            help
+            Continuous restart triggers version rollback.
+    endmenu
+    menu "aerobox"
+        config AEROBOX_GW
+            string "Aerobox gw ID"
+            default "da130501"
+            help 
+                Aerobox gateway ID
+        
+        config AEROBOX_PAIR
+            string "aerobox ID"
+            default "ab130501"
+            help 
+                Aerobox pair ID
+    endmenu
+    menu "torandoedge"
+        config HEX_CLIENT_ID
+            string "Hex Client ID"
+            default "e1160401"
+            help 
+                Auth gateway ID
+        
+        config AUTH_CLIENT_ID
+            string "Auth Client ID"
+            default "te-xx-000001"
+            help 
+                Auth gateway ID
+        
+        config AUTH_CLIENT_SECRET
+            string "Auth Client password"
+            default "tornadopwd"
+            help 
+                Auth web password
+        
+        config SENSOR_UINT_01
+            string "config ECU pair"
+            default "d1170001"
+            help 
+                CONFIG_SENSOR_UINT_01
+        
+        config DISPLAY_UINT_01
+            string "config display pair"
+            default "F1170001"
+            help 
+                CONFIG_DISPLAY_UINT_01
+
+        config TORNADOEDGE_PUB_URI
+            string "tornadoedge MQTT namespace/protocol/version"
+            default "tornadoedge/te-gw"
+            help 
+                tornadoedge MQTT pub uri
+        
+        config DEVICE_HOSTNAME
+            string "device hostname mDNS"
+            default "TE-gateway"
+            help
+                hostname and from mDNS user can access by hostname.local            
+        
+        config MQTT_AUTH_URI
+            string "config auth MQTT"
+            default "mqtts://te-000000:ca8a1f1c-7cb1-42d2-aa63-537b55e84fff@mqtt.entry.ideasky.app:8883"
+            help 
+                MQTT settings
+
+        config TORNADOEDGE_SUB_URI
+            string "config SUB URI MQTT"
+            default "tornadoedge/te-gw"
+            help 
+                MQTT settings for subscribe
+    endmenu
+endmenu
