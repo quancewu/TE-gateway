@@ -54,8 +54,10 @@ For any technical queries, please open an [issue] (https://github.com/espressif/
 * upgrade for SQ GW 2.0
 
 ## bug fix
-V1.0.9
+* V1.0.9
+
 add aerobox heartbeat -> using same time resolution in tornadoedge gateway
-V1.0.8
+* V1.0.8
+
 change namespace ideasky -> tornadoedge
 aerobox-raw Client -> DeviceId
