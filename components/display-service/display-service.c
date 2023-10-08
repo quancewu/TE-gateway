@@ -187,12 +187,11 @@ void display_stream_handler(void *pvParameters)
     uint8_t aerobox_code[4];
     uint8_t init_display[14] = {0x55 ,0xAA, 0x01, 0x0A, 0xC0, 0x01, 0x00, 0x00, 0x00, 0x01, 0x01, 0x58, 0x58, 0x73};
 
-
-    ESP_LOGI(TAG,"init_display -> %s ",(char*)init_display);
-    // for(int i=0;i<14;i++){
-    //     int sent = uart_write_bytes(UART_NUM_2, &init_display[i], 1);
-    //     // txBytes += sent;
-    // }
+    ESP_LOGI(TAG,"init_display -> XX");
+    for(int i=0;i<14;i++){
+        int sent = uart_write_bytes(UART_NUM_2, &init_display[i], 1);
+        // txBytes += sent;
+    }
     vTaskDelay(500 / portTICK_PERIOD_MS);
 
     for (;;){
@@ -462,6 +461,8 @@ void display_stream_handler(void *pvParameters)
                 case DISPLAY_TIMEOUT_EVENT:{
                     ESP_LOGI(TAG, "Queue receive timeout mutlicast is not empty");
                     memcpy(display_data_model.temp,"No",sizeof(display_data_model.temp));
+                    display_data_model.t_color = color_green;
+                    display_data_model.rh_color = color_green;
                     display_data_model.pm_color = color_green;
                     display_data_model.light_color = color_green;
                     display_data_model.co2_color = color_green;
@@ -487,6 +488,8 @@ void display_stream_handler(void *pvParameters)
             timeout_counter = 0;
             ESP_LOGI(TAG, "Queue receive timeout");
             memcpy(display_data_model.temp,"//",sizeof(display_data_model.temp));
+            display_data_model.t_color = color_green;
+            display_data_model.rh_color = color_green;
             display_data_model.pm_color = color_green;
             display_data_model.light_color = color_green;
             display_data_model.co2_color = color_green;

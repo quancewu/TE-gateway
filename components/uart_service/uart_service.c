@@ -165,9 +165,9 @@ int sendData_byte(const char* logName, uint8_t* data, uint8_t len, uint8_t cmd[2
     }
     data[len-2] = sum%255;
     blink_led_R(1);
-    // char *strdata = phex(data, 32);
-    // printf("send data: %s\n",strdata);
-    // free(strdata);
+    char *strdata = phex(data, 32);
+    printf("send data: %s\n",strdata);
+    free(strdata);
     int txBytes = 0;
     for(i=0;i<len;i++){
         int sent = uart_write_bytes(UART_NUM_1, &data[i], 1);
@@ -231,16 +231,16 @@ char* uart_async_get_data_json(){
 void send_aerobox_heartbeat_task(void *pvParameters){
     vTaskDelay((tornadoedge_configs_v1.local_muticast_resolution*1000*30) / portTICK_PERIOD_MS);
     while (true){
-        for (int j=0; j<10; j++){
-            // if (strcmp((char*)aerobox_auth_settings.aerobox_pair[j],"")){
-            //     if (recode[j].retry >= 0x0A) {
-            //         mqtt_send_tornado_factory(AEROBOX_HEARTBEAT,NO_RESPONSE,"",(char*)aerobox_auth_settings.aerobox_pair[j],"");
-            //     }
-            //     else {
-            //         mqtt_send_tornado_factory(AEROBOX_HEARTBEAT,FINE,"",(char*)aerobox_auth_settings.aerobox_pair[j],"");
-            //     }
-            // }
-            if (strcmp((char*)tornadoedge_sensor_unit_v2.sensor_unit_pairs[j],"")){
+        for (int j=0; j<16; j++){
+            if (strcmp((char*)aerobox_auth_settings.aerobox_pair[j],"") && tornadoedge_configs_v1.aerobox_gw_mode){
+                if (recode[j].retry >= 0x0A) {
+                    mqtt_send_tornado_factory(AEROBOX_HEARTBEAT,NO_RESPONSE,"",(char*)aerobox_auth_settings.aerobox_pair[j],"");
+                }
+                else {
+                    mqtt_send_tornado_factory(AEROBOX_HEARTBEAT,FINE,"",(char*)aerobox_auth_settings.aerobox_pair[j],"");
+                }
+            }
+            if (strcmp((char*)tornadoedge_sensor_unit_v2.sensor_unit_pairs[j],"") && tornadoedge_configs_v1.lcd_1602_mode){
                 if (recode[j].retry >= 0x1F) {
                     blink_led_B(2);
                     mqtt_send_tornado_factory(SG_HEARTBEAT,NO_RESPONSE,"",(char*)tornadoedge_sensor_unit_v2.sensor_unit_pairs[j],"");
@@ -306,7 +306,9 @@ void uart_tx_task(void *pvParameter)
                 ecu_pair += 2;
             }
             send_data[1] = 0x01;
+            // send_data[2] = 0x04;
             send_data[2] = 0x04;
+            send_data[3] = 0x17;
             send_data[4] = 0xc1;
             send_data[5] = 0x01; send_data[6] = 0x04; send_data[7] = 0x17; send_data[8] = 0xe1; 
             time(&now);
@@ -381,56 +383,6 @@ void uart_tx_task(void *pvParameter)
             continue;
 
         }
-        // if (lr_gw_pair.sync_from_server){
-        //     lr_gw_pair.sync_from_server = false;
-        //     // get lr_gw paring data
-        //     cmd[0] = 0xC1;  cmd[1] =  0x0B;
-        //     sendData_byte(TX_TASK_TAG, send_data, sizeof(send_data), cmd);
-        //     vTaskDelay(2000 / portTICK_PERIOD_MS);
-        //     // get lr_gw paring quantity
-        //     cmd[0] = 0xC1;  cmd[1] =  0x02;
-        //     sendData_byte(TX_TASK_TAG, send_data, sizeof(send_data), cmd);
-        // }
-        // // delete pairing SU
-        // if (!lr_gw_pair.status || lr_gw_pair.pair_quantity==0){
-        //     cmd[0] = 0xC0;  cmd[1] =  0x0B;
-        //     for (int i=0;i<lr_gw_pair.pair_num;i++){
-        //         printf("deleting %d\n",i+1);
-        //         send_data[16] = 1;send_data[17] = 0;send_data[18] = 0;send_data[19] = 0;
-        //         for(int j=12; j<16; j++){
-        //             send_data[j] = recode[i+1].lr_gw_data[j-12];
-        //         }
-        //         sendData_byte(TX_TASK_TAG, send_data, sizeof(send_data), cmd);
-        //         vTaskDelay(300 / portTICK_PERIOD_MS);
-        //     }
-        //     cmd[0] = 0xC1;  cmd[1] =  0x0B;
-        //     sendData_byte(TX_TASK_TAG, send_data, sizeof(send_data), cmd);
-        //     // pairing 
-        //     for (int j=0; j<10; j++){
-        //         if (strcmp((char*)tornadoedge_auth_settings.ecu_pairs[j],"")){
-        //             char* ecu_pair = (char*)tornadoedge_auth_settings.ecu_pairs[j];
-        //             ESP_LOGI(TX_TASK_TAG,"pairing %s",tornadoedge_auth_settings.ecu_pairs[j]);
-        //             for (int i = 0; i < 4; i++){
-        //                 sscanf(ecu_pair, "%2hhx", &device_code[3-i]);
-        //                 send_data[15-i] = device_code[3-i];
-        //                 ecu_pair += 2;
-        //             }
-        //             time(&now);
-        //             localtime_r(&now, &timeinfo);
-        //             strftime(strftime_buf, sizeof(strftime_buf), "%x %X", &timeinfo);
-        //             ESP_LOGI(TX_TASK_TAG, "The current date/time in UTC+0 is: %s", strftime_buf);
-        //             cmd[0] = 0xC0;  cmd[1] =  0x02;
-        //             send_data[24] = (timeinfo.tm_year-100); send_data[25] = (timeinfo.tm_mon+1); send_data[26] = (timeinfo.tm_mday);
-        //             send_data[27] = (timeinfo.tm_hour    ); send_data[28] = (timeinfo.tm_min  ); send_data[29] = (timeinfo.tm_sec );
-        //             sendData_byte(TX_TASK_TAG, send_data, sizeof(send_data), cmd);
-        //             // recode[j].request_state = 0x01;
-        //             vTaskDelay(500 / portTICK_PERIOD_MS);
-        //         }
-        //     }
-        //     lr_gw_pair.status = true;
-        //     cmd[0] = 0xC1;  cmd[1] =  0x0B;
-        //     sendData_byte(TX_TASK_TAG, send_data, sizeof(send_data), cmd);
-        // }
         // for (int j=0; j<10; j++){
         //     if (strcmp((char*)aerobox_auth_settings.aerobox_pair[j],"")){
         //         char* ecu_pair = (char*)aerobox_auth_settings.aerobox_pair[j];
@@ -539,7 +491,7 @@ void uart_rx_task(void *arg)
                 }
                 // ESP_LOG_BUFFER_HEXDUMP(RX_TASK_TAG, data, rxBytes, ESP_LOG_INFO);
                 if (sum%255 == data[rxBytes-2]){
-                    printf("check sum correct %d %d\n",sum%255, data[rxBytes-2]);
+                    // printf("check sum correct %d %d\n",sum%255, data[rxBytes-2]);
                 }
                 else{
                     printf("check sum not correct %d %d\n",sum%255, data[rxBytes-2]);
@@ -593,9 +545,6 @@ void uart_rx_task(void *arg)
                     ESP_LOGI(RX_TASK_TAG, "C1 00");
                     ESP_LOGI(RX_TASK_TAG, "Hour Data Report");
                     blink_led_R(2);
-                    // mqtt_send_tornado_data(SG_JSON_DATA,FINE,data,
-                    //             str_su_code,
-                    //             (char*)tornadoedge_auth_settings_v2.hex_client_id);
                     for (int j=0; j<10; j++){
                         if (strcasecmp( (char*)tornadoedge_sensor_unit_v2.sensor_unit_pairs[j],str_su_code) == 0){
                             recode[j].request_state = 0x00;

@@ -125,8 +125,7 @@ void app_main(void)
 
     initialize_uart();
 
-    // if (tornadoedge_configs_v1.lcd_1602_mode){
-    if (true){
+    if (tornadoedge_configs_v1.lcd_1602_mode){
         xTaskCreate(&lcd1602_task, "lcd1602_task", 4096, NULL, 5, NULL);
     }
 
@@ -163,15 +162,11 @@ void app_main(void)
 
     xTaskCreate(send_aerobox_heartbeat_task, "send_aerobox_heartbeat_task", 1024*2, NULL, 4, NULL);
 
-    // while (true)
-    // {
-    //     blink_led_G(1);
-    //     vTaskDelay(100 / portTICK_PERIOD_MS);
-    //     blink_led_R(2);
-    //     vTaskDelay(100 / portTICK_PERIOD_MS);
-    //     blink_led_B(3);
-    //     vTaskDelay(100 / portTICK_PERIOD_MS);
-    // }
+    while (true)
+    {
+        blink_led_B(1);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
     
 
 }

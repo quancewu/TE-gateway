@@ -53,7 +53,7 @@ function to process requests, decode URLs, serve files, etc. etc.
 
 #include "esp_storage.h"
 
-#include "uart_service.h"
+// #include "uart_service.h"
 
 
 /* @brief tag used for ESP serial console messages */
@@ -436,8 +436,8 @@ static esp_err_t http_server_get_handler(httpd_req_t *req){
 
 			// if(uart_async_lock_json_buffer(( TickType_t ) 10)){
 			if(true){
-				char *buff = uart_async_get_data_json();
-				// char *buff = "uart_async_get_data_json()";
+				// char *buff = uart_async_get_data_json();
+				char *buff = "uart_async_get_data_json()";
 				if(buff){
 					httpd_resp_set_status(req, http_200_hdr);
 					httpd_resp_set_type(req, http_content_type_json);

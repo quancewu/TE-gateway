@@ -51,6 +51,7 @@ For any technical queries, please open an [issue] (https://github.com/espressif/
 
 ## V2.0.0 feature
 * correct sensor unit and display roles for tornadoedge gateway
+* upgrade for SQ GW 2.0
 
 ## bug fix
 V1.0.9

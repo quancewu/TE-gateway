@@ -240,7 +240,7 @@ async function performConnect(conntype) {
   connect_manual_div.style.display = "none";
   connect_wait_div.style.display = "block";
 
-  await deleteConnection();
+  // await deleteConnection();
 
   await fetch("connect.json", {
     method: "POST",

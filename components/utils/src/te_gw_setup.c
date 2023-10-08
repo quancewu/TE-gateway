@@ -60,7 +60,6 @@ esp_err_t parameter_update(char *topic, char *payload, te_gw_setup_mode_t setup_
         {
         case SETUP_MQTT_MODE:
             mesgt = detect_msg_type_from_topic(topic);
-            printf("%s\n\n",get_message_type_str(mesgt));
             break;
         case SETUP_WS_MODE:
             mesgt = detect_msg_type(cjson_msgType->valuestring);
@@ -169,7 +168,7 @@ esp_err_t parameter_update(char *topic, char *payload, te_gw_setup_mode_t setup_
                 int array_size = cJSON_GetArraySize(cjson_aeroboxId);
                 cJSON* cjson_item = NULL;
 
-                printf("delete all SU_ID\n");
+                ESP_LOGW(TAG, "delete all SU_ID");
                 for (int i=1; i<11; i++){
                     // set_aerobox_id(&i, "");
                     set_su_id(&i, "");
@@ -177,7 +176,7 @@ esp_err_t parameter_update(char *topic, char *payload, te_gw_setup_mode_t setup_
                 if (array_size!=0){
                     for(int i=0; i<array_size; i++){
                         cjson_item = cJSON_GetArrayItem(cjson_aeroboxId,i);
-                        printf("su_id %02d: %s\n",i,cjson_item->valuestring);
+                        ESP_LOGI(TAG, "su_id %02d: %s",i,cjson_item->valuestring);
                         int setting_num = i+1;
                         // set_aerobox_id(&setting_num, cjson_item->valuestring);
                         set_su_id(&setting_num, cjson_item->valuestring);
@@ -199,7 +198,7 @@ esp_err_t parameter_update(char *topic, char *payload, te_gw_setup_mode_t setup_
                 int array_size = cJSON_GetArraySize(cjson_aeroboxId);
                 cJSON* cjson_item = NULL;
 
-                printf("delete all display_ID\n");
+                ESP_LOGW(TAG, "delete all display_ID");
                 for (int i=1; i<11; i++){
                     // set_su_id(&i, "");
                     set_display_id(&i, "");
@@ -207,7 +206,7 @@ esp_err_t parameter_update(char *topic, char *payload, te_gw_setup_mode_t setup_
                 if (array_size!=0){
                     for(int i=0; i<array_size; i++){
                         cjson_item = cJSON_GetArrayItem(cjson_aeroboxId,i);
-                        printf("display_id %02d: %s\n",i,cjson_item->valuestring);
+                        ESP_LOGI(TAG, "display_id %02d: %s\n",i,cjson_item->valuestring);
                         int setting_num = i+1;
                         // set_su_id(&setting_num, cjson_item->valuestring);
                         set_display_id(&setting_num, cjson_item->valuestring);

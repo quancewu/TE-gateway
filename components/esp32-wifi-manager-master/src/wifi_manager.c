@@ -381,7 +381,7 @@ esp_err_t wifi_manager_save_sta_config(){
 				return esp_err;
 			}
 			change = true;
-			ESP_LOGI(TAG, "wifi_manager_wrote wifi_sta_config: ssid:%s",wifi_manager_config_sta->sta.ssid);
+			ESP_LOGI(TAG, "wifi_manager_wrote wifi_sta_config.ssid:%s",wifi_manager_config_sta->sta.ssid);
 
 		}
 
@@ -395,7 +395,7 @@ esp_err_t wifi_manager_save_sta_config(){
 				return esp_err;
 			}
 			change = true;
-			ESP_LOGI(TAG, "wifi_manager_wrote wifi_sta_config: password:%s",wifi_manager_config_sta->sta.password);
+			ESP_LOGI(TAG, "wifi_manager_wrote wifi_sta_config.password:%s",wifi_manager_config_sta->sta.password);
 		}
 
 		sz = sizeof(tmp_settings);
@@ -480,7 +480,15 @@ bool wifi_manager_fetch_wifi_sta_config(){
 		    nvs_commit(handle);
 			nvs_close(handle);
 			nvs_sync_unlock();
-			return false;
+			ESP_LOGW(TAG, "Start erase_flash_nvs_value");
+			esp_err_t ret;
+			erase_flash_nvs_value();
+			init_flash_nvs_value();
+			ret = save_tornadoedge_value();
+			if (ret != ESP_OK) ESP_LOGI(TAG, "Error (%s) reading data from NVS!\n", esp_err_to_name(ret));
+			ret = save_te_config_value();
+			if (ret != ESP_OK) ESP_LOGI(TAG, "Error (%s) reading data from NVS!\n", esp_err_to_name(ret));
+			// return false;
 		}
 		memcpy(wifi_manager_config_sta->sta.ssid, buff, sz);
 
@@ -511,7 +519,6 @@ bool wifi_manager_fetch_wifi_sta_config(){
 		free(buff);
 		nvs_close(handle);
 		nvs_sync_unlock();
-
 
 		ESP_LOGI(TAG, "wifi_manager_fetch_wifi_sta_config: ssid:%s password:%s",wifi_manager_config_sta->sta.ssid,wifi_manager_config_sta->sta.password);
 		ESP_LOGD(TAG, "wifi_manager_fetch_wifi_settings: SoftAP_ssid:%s",wifi_settings.ap_ssid);
@@ -953,7 +960,6 @@ void set_default_sta_ssid_password(){
 
 void set_new_ap_ssid(char* new_ap_ssid){
 	memcpy(wifi_settings.ap_ssid, new_ap_ssid, sizeof(wifi_settings.ap_ssid));
-	// printf("%s\n",new_ap_ssid);
 	ESP_LOGI(TAG, "Read new device code %s",wifi_settings.ap_ssid);
 	wifi_manager_save_sta_config();
 }
@@ -967,6 +973,7 @@ void wifi_manager_connect_async(){
 		wifi_manager_clear_ip_info_json();
 		wifi_manager_unlock_json_buffer();
 	}	
+	xTimerStop( wifi_manager_retry_timer, (TickType_t)0 );
 	wifi_manager_send_message(WM_ORDER_CONNECT_STA, (void*)CONNECTION_REQUEST_USER);
 }
 

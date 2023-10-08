@@ -266,8 +266,7 @@ int parse_mqtt_param_get(parameter_type_t param, cJSON *parsed_data, cJSON *resp
 struct aerobox_auth_settings_t
 {
 	uint8_t aerobox_gw[10];
-	uint8_t aerobox_pair[10][10];
-	uint8_t mqtt_uri[50];
+	uint8_t aerobox_pair[16][10];
 };
 extern struct aerobox_auth_settings_t aerobox_auth_settings;
 

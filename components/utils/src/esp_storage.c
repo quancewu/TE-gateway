@@ -127,8 +127,8 @@ struct tornadoedge_config_v1_t tornadoedge_configs_v1 = {
 	.mqtt_query_resolution = 30,
 	.mqtt_query_data_age = 3600,
 	.mqtt_display_mode = false,
-	.aerobox_gw_mode = true,
-	.lcd_1602_mode = false,
+	.aerobox_gw_mode = false,
+	.lcd_1602_mode = true,
     .backup_mqtt = true,
     .display_eng_mode = true,
     .gw_rfch = 20,
@@ -136,7 +136,7 @@ struct tornadoedge_config_v1_t tornadoedge_configs_v1 = {
 
 struct device_config_t device_configs = {
     .device_mac = "00:00:00:00:00:00",
-    .tornado_ver = "v2.0.2",
+    .tornado_ver = "v2.0.5",
 };
 
 esp_err_t esp_storage_init()
