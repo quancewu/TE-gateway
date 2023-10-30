@@ -1,8 +1,5 @@
 # _Tornadoedge display server_
 
-
-## How to use example
-
 ### Hardware Required
 
 * A development board with ESP32 SoC (e.g., ESP32-DevKitC, ESP-WROVER-KIT, etc.)
