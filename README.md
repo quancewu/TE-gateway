@@ -53,7 +53,12 @@ For any technical queries, please open an [issue] (https://github.com/espressif/
 * correct sensor unit and display roles for tornadoedge gateway
 * upgrade for SQ GW 2.0
 
+
 ## bug fix
+
+* V2.0.5
+add sg feature
+
 * V1.0.9
 
 add aerobox heartbeat -> using same time resolution in tornadoedge gateway
