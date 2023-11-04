@@ -136,7 +136,7 @@ struct tornadoedge_config_v1_t tornadoedge_configs_v1 = {
 
 struct device_config_t device_configs = {
     .device_mac = "00:00:00:00:00:00",
-    .tornado_ver = "v2.0.5",
+    .tornado_ver = "v2.0.6",
 };
 
 esp_err_t esp_storage_init()

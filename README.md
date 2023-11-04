@@ -16,8 +16,9 @@ Connect Uart to display module:
 
 |ledc channel|GPIO|Color|
 |:---:|:---:|:---:|
-|channel 0|GPIO25|Green|
-|channel 1|GPIO26|Red|
+|channel 0|GPIO2|Green|
+|channel 1|GPIO23|Red|
+|channel 2|GPIO4|Blue|
 
 ### Configure the project
 
@@ -51,14 +52,22 @@ For any technical queries, please open an [issue] (https://github.com/espressif/
 * upgrade for SQ GW 2.0
 
 
-## bug fix
+## bug fix & feature
+
+* V2.0.6
+
+B -> clean repeat UART sender code
+F -> Verison show in LCD1602 at boot up
 
 * V2.0.5
+
 add sg feature
+add heartbeat blue led blink every second
 
 * V1.0.9
 
 add aerobox heartbeat -> using same time resolution in tornadoedge gateway
+
 * V1.0.8
 
 change namespace ideasky -> tornadoedge

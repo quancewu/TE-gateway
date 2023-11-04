@@ -124,6 +124,20 @@ void initialize_display_uart()
     uart_set_pin(UART_NUM_2, TXD_PIN, RXD_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
 }
 
+void sent_data_to_display_uart()
+{
+    int data_len = sizeof(display_data_model);
+    int txBytes = 0;                    
+    uint8_t data[27];
+    memcpy(data, &display_data_model, sizeof(display_data_model));
+    ESP_LOGI(TAG,"data -> %s",(char*)data);
+    for(int i=0;i<data_len;i++){
+        int sent = uart_write_bytes(UART_NUM_2, &data[i], 1);
+        txBytes += sent;
+    }
+    return 0;
+}
+
 void set_to_display_service(uint8_t* data)
 {
     memcpy(udp_send_data.aerobox_data, data, 64);
@@ -177,7 +191,9 @@ void set_sq_data_display_service(int *pos,const char * msg_id, uint8_t* raw_data
         sq_data[*pos].rforder = raw_data[5] & ~(0xF0);
     }
 }
-
+/*
+UART_num_02 sent data from multicast information
+*/
 void display_stream_handler(void *pvParameters)
 {
     display_message_t message;
@@ -190,7 +206,6 @@ void display_stream_handler(void *pvParameters)
     ESP_LOGI(TAG,"init_display -> XX");
     for(int i=0;i<14;i++){
         int sent = uart_write_bytes(UART_NUM_2, &init_display[i], 1);
-        // txBytes += sent;
     }
     vTaskDelay(500 / portTICK_PERIOD_MS);
 
@@ -199,7 +214,6 @@ void display_stream_handler(void *pvParameters)
         
         if (xStatus == pdPASS) {
             if (message.code == DISPLAY_DESTORY_EVENT){
-                // destory_mqtt();
                 vTaskDelay(3000 / portTICK_RATE_MS); 
             }
             if (message.code == DISPLAY_STOP_EVENT){
@@ -219,7 +233,6 @@ void display_stream_handler(void *pvParameters)
                                 is_recoded = true;
                                 break;
                             }
-                            
                         }
                     }
                     // check is display eng mode will not filter display ID
@@ -239,15 +252,7 @@ void display_stream_handler(void *pvParameters)
                         memcpy(display_data_model.rh,&strcode[2],sizeof(display_data_model.rh));
                         display_data_model.co2_color = color_green;
                         memcpy(display_data_model.co2,&strcode[4],sizeof(display_data_model.co2));
-                        int data_len = sizeof(display_data_model);
-                        int txBytes = 0;                    
-                        uint8_t data[27];
-                        memcpy(data, &display_data_model, sizeof(display_data_model));
-                        ESP_LOGI(TAG,"data -> %s",(char*)data);
-                        for(int i=0;i<data_len;i++){
-                            int sent = uart_write_bytes(UART_NUM_2, &data[i], 1);
-                            txBytes += sent;
-                        }
+                        sent_data_to_display_uart();
                         vTaskDelay(500 / portTICK_PERIOD_MS);
                     }
                     free(strcode);
@@ -323,17 +328,7 @@ void display_stream_handler(void *pvParameters)
                         ESP_LOGD(TAG, "CO2: %s",co2str);
                         memcpy(display_data_model.co2,co2str,sizeof(display_data_model.co2));
                     }
-
-                    int data_len = sizeof(display_data_model);
-                    int txBytes = 0;                    
-                    uint8_t data[27];
-                    memcpy(data, &display_data_model, sizeof(display_data_model));
-                    ESP_LOGI(TAG,"data -> %s",(char*)data);
-                    timeout_counter = 0;
-                    for(int i=0;i<data_len;i++){
-                        int sent = uart_write_bytes(UART_NUM_2, &data[i], 1);
-                        txBytes += sent;
-                    }
+                    sent_data_to_display_uart();
                     vTaskDelay(50 / portTICK_PERIOD_MS);
                     break;
                 }
@@ -363,15 +358,7 @@ void display_stream_handler(void *pvParameters)
                         memcpy(display_data_model.rh,&message.device_id[2],sizeof(display_data_model.rh));
                         display_data_model.co2_color = color_green;
                         memcpy(display_data_model.co2,&message.device_id[4],sizeof(display_data_model.co2));
-                        int data_len = sizeof(display_data_model);
-                        int txBytes = 0;                    
-                        uint8_t data[27];
-                        memcpy(data, &display_data_model, sizeof(display_data_model));
-                        ESP_LOGI(TAG,"data -> %s",(char*)data);
-                        for(int i=0;i<data_len;i++){
-                            int sent = uart_write_bytes(UART_NUM_2, &data[i], 1);
-                            txBytes += sent;
-                        }
+                        sent_data_to_display_uart();
                         vTaskDelay(500 / portTICK_PERIOD_MS);
                     }
 
@@ -444,17 +431,7 @@ void display_stream_handler(void *pvParameters)
                         ESP_LOGD(TAG, "CO2: %s",co2str);
                         memcpy(display_data_model.co2,co2str,sizeof(display_data_model.co2));
                     }
-
-                    int data_len = sizeof(display_data_model);
-                    int txBytes = 0;                    
-                    uint8_t data[27];
-                    memcpy(data, &display_data_model, sizeof(display_data_model));
-                    ESP_LOGI(TAG,"data -> %s",(char*)data);
-                    timeout_counter = 0;
-                    for(int i=0;i<data_len;i++){
-                        int sent = uart_write_bytes(UART_NUM_2, &data[i], 1);
-                        txBytes += sent;
-                    }
+                    sent_data_to_display_uart();
                     vTaskDelay(50 / portTICK_PERIOD_MS);
                     break;
                 }
@@ -469,15 +446,7 @@ void display_stream_handler(void *pvParameters)
                     memcpy(display_data_model.pm2_5,"PAB",sizeof(display_data_model.pm2_5));
                     memcpy(display_data_model.rh,"//",sizeof(display_data_model.rh));
                     memcpy(display_data_model.co2,"Data",sizeof(display_data_model.co2));
-                    int data_len = sizeof(display_data_model);
-                    int txBytes = 0;                    
-                    uint8_t data[27];
-                    memcpy(data, &display_data_model, sizeof(display_data_model));
-                    ESP_LOGI(TAG,"data -> %s",(char*)data);
-                    for(int i=0;i<data_len;i++){
-                        int sent = uart_write_bytes(UART_NUM_2, &data[i], 1);
-                        txBytes += sent;
-                    }
+                    sent_data_to_display_uart();
                     vTaskDelay(500 / portTICK_PERIOD_MS);
                 }
                 default:
@@ -496,15 +465,7 @@ void display_stream_handler(void *pvParameters)
             memcpy(display_data_model.pm2_5,"///",sizeof(display_data_model.pm2_5));
             memcpy(display_data_model.rh,"//",sizeof(display_data_model.rh));
             memcpy(display_data_model.co2,"////",sizeof(display_data_model.co2));
-            int data_len = sizeof(display_data_model);
-            int txBytes = 0;                    
-            uint8_t data[27];
-            memcpy(data, &display_data_model, sizeof(display_data_model));
-            ESP_LOGI(TAG,"data -> %s",(char*)data);
-            for(int i=0;i<data_len;i++){
-                int sent = uart_write_bytes(UART_NUM_2, &data[i], 1);
-                txBytes += sent;
-            }
+            sent_data_to_display_uart();
             vTaskDelay(500 / portTICK_PERIOD_MS);
         }
     }
@@ -977,7 +938,7 @@ err:
 }
 #endif
 
-static void mcast_example_task(void *pvParameters)
+static void mcast_message_task(void *pvParameters)
 {
     while (1) {
         int sock;
@@ -1090,10 +1051,10 @@ static void mcast_example_task(void *pvParameters)
                     err = sendto(sock, sendbuf, 84, 0, res->ai_addr, res->ai_addrlen);
                 }
                 freeaddrinfo(res);
-                // if (err < 0) {
-                //     ESP_LOGE(TAG, "IPV4 sendto failed. errno: %d", errno);
-                //     break;
-                // }
+                if (err < 0) {
+                    ESP_LOGE(TAG, "IPV4 sendto failed. errno: %d", errno);
+                    break;
+                }
             }
         }
 
@@ -1151,36 +1112,12 @@ void lcd1602_task(void * pvParameter)
     i2c_lcd1602_set_backlight(lcd_info, true);
 
     i2c_lcd1602_write_string(lcd_info, "  TornadoEdge         TornadoEdge       Gateway power on");
+    vTaskDelay(1000 / portTICK_RATE_MS);
+    i2c_lcd1602_move_cursor(lcd_info, 0, 1);
+    char device_ver_str[35];
+    sprintf(device_ver_str,"Ver: %s        ",device_configs.tornado_ver);
+    i2c_lcd1602_write_string(lcd_info, device_ver_str);
     vTaskDelay(2000 / portTICK_RATE_MS);
-
-    // i2c_lcd1602_move_cursor(lcd_info, 0, 0);
-    // i2c_lcd1602_write_string(lcd_info, "T:      RH:     ");
-    // i2c_lcd1602_move_cursor(lcd_info, 0, 1);
-    // i2c_lcd1602_write_string(lcd_info, "PM:     CO2:    ");
-
-    // while (true)
-    // {
-    //     i2c_lcd1602_move_cursor(lcd_info, 3, 0);
-    //     i2c_lcd1602_write_char(lcd_info, display_data_model.temp[0]);
-    //     i2c_lcd1602_write_char(lcd_info, display_data_model.temp[1]);
-    //     // i2c_lcd1602_write_string(lcd_info, (char*)display_data_model.temp);
-    //     i2c_lcd1602_move_cursor(lcd_info, 12, 0);
-    //     i2c_lcd1602_write_char(lcd_info, display_data_model.rh[0]);
-    //     i2c_lcd1602_write_char(lcd_info, display_data_model.rh[1]);
-    //     // i2c_lcd1602_write_string(lcd_info, (char*)display_data_model.rh);
-    //     i2c_lcd1602_move_cursor(lcd_info, 3, 1);
-    //     i2c_lcd1602_write_char(lcd_info, display_data_model.pm2_5[0]);
-    //     i2c_lcd1602_write_char(lcd_info, display_data_model.pm2_5[1]);
-    //     i2c_lcd1602_write_char(lcd_info, display_data_model.pm2_5[2]);
-    //     // i2c_lcd1602_write_string(lcd_info, (char*)display_data_model.pm2_5);
-    //     i2c_lcd1602_move_cursor(lcd_info, 12, 1);
-    //     i2c_lcd1602_write_char(lcd_info, display_data_model.co2[0]);
-    //     i2c_lcd1602_write_char(lcd_info, display_data_model.co2[1]);
-    //     i2c_lcd1602_write_char(lcd_info, display_data_model.co2[2]);
-    //     i2c_lcd1602_write_char(lcd_info, display_data_model.co2[3]);
-    //     // i2c_lcd1602_write_string(lcd_info, (char*)display_data_model.co2);
-    //     vTaskDelay(500 / portTICK_RATE_MS);
-    // }
 
     i2c_lcd1602_set_display(lcd_info, false);
     i2c_lcd1602_move_cursor(lcd_info, 0, 0);
@@ -1220,7 +1157,7 @@ void display_service_init(){
     
     xTaskCreate(udp_server_task, "udp_server", 4096, (void*)AF_INET, 5, NULL);
 
-    xTaskCreate(&mcast_example_task, "mcast_task", 4096, NULL, 5, NULL);
+    xTaskCreate(&mcast_message_task, "mcast_task", 4096, NULL, 5, NULL);
 
     display_stream_handler_start();
 
