@@ -1,5 +1,14 @@
 # _Tornadoedge display server_
 
+### 🧐 About <a name = "about"></a>
+* A Wi-Fi AP for setting mode. STA for operation mode edge device.
+* MQTT secure subscribe and publish device with IOT server.
+* Websocket server for fast response setup web or setup utility.
+* UART communication with other low power device(STM32 M0).
+* I2C for LCD1602.
+* UDP server for computer broadcast search.
+* Multicast sender & receiver for 1-many information deliver.
+
 ### Hardware Required
 
 * A development board with ESP32 SoC (e.g., ESP32-DevKitC, ESP-WROVER-KIT, etc.)
