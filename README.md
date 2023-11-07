@@ -66,11 +66,13 @@ For any technical queries, please open an [issue] (https://github.com/espressif/
 * V2.0.6
 
 B -> clean repeat UART sender code
+
 F -> Verison show in LCD1602 at boot up
 
 * V2.0.5
 
 add sg feature
+
 add heartbeat blue led blink every second
 
 * V1.0.9
